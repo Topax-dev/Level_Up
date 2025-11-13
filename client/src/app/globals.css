@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@plugin "@tailwindcss/typography";
+
+.height-home {
+  height: calc(100dvh - 80px);
+}
+
+.prose pre {
+  @apply max-w-full w-full bg-gray-800 text-gray-100 p-4 rounded-xl overflow-x-auto shadow-lg;
+}
+
+.prose pre code {
+  @apply dark:text-gray-300 text-gray-700 text-lg;
+}
+
+.prose .code {
+  @apply dark:text-gray-200 text-gray-800 font-medium text-lg;
+}
+
+.prose p {
+  @apply dark:text-gray-300 text-gray-700 text-sm font-medium ;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  @apply dark:text-gray-100 text-gray-700;
+}

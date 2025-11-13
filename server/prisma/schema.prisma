@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id          Int           @id @default(autoincrement())
+  avatar      String
+  username    String
+  email       String        @unique
+  password    String
+  role        String        @default("admin")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  ActionAdmin ActionAdmin[]
+}
+
+model ActionAdmin {
+  id      Int    @id @default(autoincrement())
+  idAdmin Int
+  action  String
+  explanation String
+  createdAt DateTime @default(now())
+
+  admin Admin @relation(fields: [idAdmin], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  avatar       String
+  username     String
+  email        String   @unique
+  password     String
+  purpose      String
+  selectedPath Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  Paths    Path?      @relation(fields: [selectedPath], references: [id])
+  progress Progress[]
+}
+
+model Path {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  imagePath   String
+  description String  @db.Text
+  isPublished Boolean @default(false)
+
+  userId      User[]
+  pathCourses PathCourse[]
+}
+
+model Course {
+  id          Int    @id @default(autoincrement())
+  title       String @unique
+  imageCourse String
+  description String @db.Text
+
+  pathCourses  PathCourse[]
+  LessonCourse LessonCourse[]
+}
+
+model PathCourse {
+  id         Int @id @default(autoincrement())
+  pathId     Int
+  courseId   Int
+  orderIndex Int
+
+  path   Path   @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([pathId, courseId])
+}
+
+model LessonSection {
+  id           Int            @id @default(autoincrement())
+  title        String         @unique
+  lessonCourse LessonCourse[]
+  lesson       Lesson[]
+}
+
+model Lesson {
+  id           Int        @id @default(autoincrement())
+  title        String     @unique
+  content      String?    @db.Text
+  type         LessonType
+  sourceUrl    String?
+  lastSyncedAt DateTime?
+  isEdited     Boolean    @default(false)
+  orderIndex   Int
+
+  progress        Progress[]
+  LessonSection   LessonSection? @relation(fields: [lessonSectionId], references: [id])
+  lessonSectionId Int?
+}
+
+model LessonCourse {
+  id              Int  @id @default(autoincrement())
+  courseId        Int
+  orderIndex      Int
+  lessonSectionId Int?
+
+  course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  LessonSection LessonSection? @relation(fields: [lessonSectionId], references: [id])
+}
+
+model Progress {
+  id          Int            @id @default(autoincrement())
+  status      ProgressStatus @default(NOT_STARTED)
+  completedAt DateTime?
+
+  userId   Int
+  lessonId Int
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+enum LessonType {
+  WATCH
+  READING
+  PROJECT
+  QUIZ
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
