@@ -289,7 +289,7 @@ const PathCourse = () => {
           </div>
 
           <div>
-            {adminId ? null : selectedPath === path?.id ? (
+            {!user.id ? null : selectedPath === path?.id ? (
               <button className="button border border-gray-400 dark:border-gray-600 px-6 py-3 rounded-md text-sm">
                 Selected Path
               </button>
