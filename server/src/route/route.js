@@ -15,6 +15,7 @@ import {
   deletelesson,
   deleteLessonCourse,
   deleteLessonFromSection,
+  DeleteLessonSection,
   deletePath,
   DeletePathCourse,
   deleteProgressByUserId,
@@ -45,6 +46,7 @@ import {
   getLessonByTitle,
   getLessonContent,
   getLessonSection,
+  getLessonSectionById,
   getPathById,
   getPathCourseByPathId,
   getPaths,
@@ -65,6 +67,7 @@ import {
   updateIndexLesson,
   updateLesson,
   updateLessonCourse,
+  updateLessonSection,
   updateOrderIndexLesson,
   updatePath,
   UpdatePathCourse,
@@ -175,6 +178,9 @@ routes.get('/api/lesson/by-title/:title', getCourseLessonSectionWithTitleLesson)
 
 routes.post('/api/lesson-section', addLessonSection)
 routes.get('/api/lesson-section', getLessonSection)
+routes.get('/api/lesson-section/:id', getLessonSectionById)
+routes.patch('/api/lesson-section/:id', updateLessonSection)
+routes.delete('/api/lesson-section/:id', DeleteLessonSection)
 
 // LessonCourse
 

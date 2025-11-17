@@ -112,7 +112,7 @@ model LessonCourse {
   lessonSectionId Int?
 
   course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  LessonSection LessonSection? @relation(fields: [lessonSectionId], references: [id])
+  LessonSection LessonSection? @relation(fields: [lessonSectionId], references: [id], onDelete: Cascade)
 }
 
 model Progress {

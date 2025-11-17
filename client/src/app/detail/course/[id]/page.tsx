@@ -164,7 +164,7 @@ const DetailCourse = () => {
                   {course.pathCourses.map((item, index) => (
                     <div
                       key={index}
-                      className="relative rounded-xl p-6 border border-gray-200 dark:border-gray-600/50 bg-gray-700/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                      className="relative rounded-xl p-6 border border-gray-200 dark:border-gray-600/50 bg-gray-100/50 dark:bg-gray-700/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
                     >
                       <Link href={`/detail/path/${item.path.id}`}>
                         <div className="flex items-start gap-3">
@@ -209,7 +209,7 @@ const DetailCourse = () => {
                     item.LessonSection.lesson.map((item, index) => (
                       <div
                         key={index}
-                        className="relative rounded-xl p-6 border border-gray-200 dark:border-gray-600/50 bg-gray-700/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                        className="relative rounded-xl p-6 border border-gray-200 dark:border-gray-600/50 bg-gray-100/50 dark:bg-gray-700/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
                       >
                         <Link href={`/detail/lesson/${item.id}`}>
                           <div className="flex items-start gap-3">

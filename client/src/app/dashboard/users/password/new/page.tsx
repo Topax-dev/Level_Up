@@ -11,9 +11,9 @@ import { useCekAuth } from "@/utils/cekAuth";
 import { hideLoading, showLoading } from "@/redux/loadingSlice";
 
 const ResetPassword = () => {
-  useCekAuth()
-  const user = useSelector((state : RootState) => state.user)
-  const dispatch = useDispatch<AppDispatch>()
+  useCekAuth();
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
   const [input, setInput] = useState({
     currentPassword: "",
     newPassword: "",
@@ -41,7 +41,7 @@ const ResetPassword = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    dispatch(showLoading())
+    dispatch(showLoading());
     e.preventDefault();
     try {
       if (!input.currentPassword) {
@@ -83,24 +83,27 @@ const ResetPassword = () => {
 
       const data = {
         currentPassword: input.currentPassword,
-        newPassword: input.newPassword
-      }
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/edit/password/${user.id}`, data)
-      if(response.data[0].payload.status_code=== 401) {
-        return dispatch(showNotif({message: 'Wrong Password', type: 'error'}))
-      }
+        newPassword: input.newPassword,
+      };
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/edit/password/${user.id}`,
+        data
+      );
 
-      return dispatch(showNotif({message: 'Update Password Success', type: 'success'}))
+      return dispatch(
+        showNotif({ message: "Update Password Success", type: "success" })
+      );
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          return dispatch(
+            showNotif({ message: "Wrong Password", type: "error" })
+          );
+        }
+      }
       console.log(error);
     } finally {
-      setInput(prev => ({
-        ...prev,
-        currentPassword: '',
-        matchPassword: '',
-        newPassword : ''
-      }))
-      dispatch(hideLoading())
+      dispatch(hideLoading());
     }
   };
   return (

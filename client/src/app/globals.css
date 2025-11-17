@@ -19,7 +19,7 @@
 }
 
 .prose p {
-  @apply dark:text-gray-300 text-gray-700 text-sm font-medium ;
+  @apply dark:text-gray-400 text-gray-700 text-base font-medium;
 }
 
 .prose h1,

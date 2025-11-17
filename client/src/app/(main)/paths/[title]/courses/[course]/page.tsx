@@ -404,9 +404,9 @@ const LessonSection = () => {
       {lesson?.length != 0 && lesson ? (
         <div>
           <div className="flex flex-col gap-8">
-            {lesson.map((e, i) => (
+            {lesson?.map((e, i) => (
               <div
-                key={e.LessonSection.id}
+                key={e.LessonSection?.id}
                 className={`min-h-20 w-full rounded-lg border border-gray-200 relative ${
                   deleteSection
                     ? "border-red-500 dark:bg-gray-800 bg-white cursor-pointer"
@@ -454,19 +454,19 @@ const LessonSection = () => {
                 ) : null}
                 <div className="py-3 px-6">
                   <h1 className="text-lg font-medium dark:text-gray-100 text-gray-700">
-                    {e.LessonSection.title}
+                    {e.LessonSection?.title ?? null}
                   </h1>
                 </div>
                 <hr className="dark:border-gray-600 border-gray-200" />
                 <div className="py-3 px-3 flex flex-col w-full gap-2">
-                  {e.LessonSection.lesson?.length === 0 ? (
+                  {e.LessonSection?.lesson?.length === 0 ? (
                     <div className="flex justify-center py-5">
                       <h1 className="text-xl font-medium text-gray-400">
                         There are no Lessons Yet
                       </h1>
                     </div>
                   ) : (
-                    e.LessonSection.lesson.map((e, i) => (
+                    e.LessonSection?.lesson?.map((e, i) => (
                       <Link
                         href={`/lesson/${formatHyphen(e.title)}`}
                         aria-disabled={false}

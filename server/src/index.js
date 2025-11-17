@@ -12,7 +12,7 @@ const port = process.env.SERVER_PORT
 
 app.use(cookieParser())
 app.use(cors({
-  origin: '*',  
+  origin: process.env.CLIENT_URL,  
   credentials: true,                
 }))
 app.use(

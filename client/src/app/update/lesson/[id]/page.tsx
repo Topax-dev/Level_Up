@@ -213,29 +213,6 @@ const AddLesson = () => {
                 )}
               </div>
 
-              {noContent ? (
-                <div>
-                  <label
-                    htmlFor=""
-                    className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
-                  >
-                    Lesson Content
-                  </label>
-                  <textarea
-                    name="content"
-                    placeholder="Describe your course in detail"
-                    onChange={handleChange}
-                    value={formData.content ?? ""}
-                    className="block w-full border rounded-lg py-2.5 px-4 focus:outline-none dark:bg-gray-700/50 dark:border-gray-600 dark:text-gray-300 dark:placeholder-gray-400 dark:focus:ring-2 dark:focus:border-transparent border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 dark:focus:ring-blue-400 transition-all resize-none"
-                    rows={20}
-                  ></textarea>
-                  {error.content && (
-                    <p className="text-sm text-red-600 dark:text-red-500 mt-2 flex items-center gap-1">
-                      {error.content}
-                    </p>
-                  )}
-                </div>
-              ) : (
                 <div className="group">
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                     Lesson Source URL
@@ -269,7 +246,27 @@ const AddLesson = () => {
                     </p>
                   )}
                 </div>
-              )}
+                <div>
+                  <label
+                    htmlFor=""
+                    className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
+                  >
+                    Lesson Content
+                  </label>
+                  <textarea
+                    name="content"
+                    placeholder="Describe your course in detail"
+                    onChange={handleChange}
+                    value={formData.content ?? ""}
+                    className="block w-full border rounded-lg py-2.5 px-4 focus:outline-none dark:bg-gray-700/50 dark:border-gray-600 dark:text-gray-300 dark:placeholder-gray-400 dark:focus:ring-2 dark:focus:border-transparent border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 dark:focus:ring-blue-400 transition-all resize-none"
+                    rows={20}
+                  ></textarea>
+                  {error.content && (
+                    <p className="text-sm text-red-600 dark:text-red-500 mt-2 flex items-center gap-1">
+                      {error.content}
+                    </p>
+                  )}
+                </div>
             </div>
 
             <div className="mt-5 flex justify-center">

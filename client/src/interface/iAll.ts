@@ -186,6 +186,7 @@ export interface IDetailLeson {
   sourceUrl: string;
   LessonSection: {
     title: string;
+    id: number
   };
 }
 
@@ -208,4 +209,25 @@ export interface IAllActionAdmin extends IActionAdmin {
   admin : {
     username : string
   }
+}
+
+
+export interface ISection {
+  id : number
+  title : string
+}
+
+
+export interface IDetailSection extends ISection {
+  lesson : {
+    id : number
+    title : string
+    type : string
+  }[]
+  lessonCourse : {
+    course : {
+      id : number
+      title : string
+    }
+  }[]
 }

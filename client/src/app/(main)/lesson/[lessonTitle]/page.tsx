@@ -40,12 +40,12 @@ export default function LessonPage() {
             process.env.NEXT_PUBLIC_SERVER_URL
           }/api/lesson/title/${formatNormal(hyphenLesson)}/${userId ?? null}`
         );
-        if (!response.data[0].payload) {
-          Router.push("/paths");
-          return dispatch(
-            showNotif({ message: "Lesson Invalid", type: "error" })
-          );
-        }
+        // if (!response.data[0].payload) {
+        //   Router.push("/paths");
+        //   return dispatch(
+        //     showNotif({ message: "Lesson Invalid", type: "error" })
+        //   );
+        // }
         if (response.status == 200) {
           setNotFound(false);
           const test = await axios.get(

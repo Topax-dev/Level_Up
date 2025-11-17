@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ReactMarkDown from "react-markdown";
 import { ArrowRight, BookOpen, Pen, TvMinimal, Wrench } from "lucide-react";
+import Link from "next/link";
 
 const Detaillesson = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -95,7 +96,11 @@ const Detaillesson = () => {
                 </div>
                 <span className="text-sm font-medium text-slate-400">
                   {lesson.LessonSection
-                    ? lesson.LessonSection.title
+                    ? (
+                      <Link href={`/detail/section/${lesson.LessonSection.id}`}>
+                        {lesson.LessonSection.title}
+                      </Link>
+                    )
                     : "Sections Not Found"}
                 </span>
               </div>

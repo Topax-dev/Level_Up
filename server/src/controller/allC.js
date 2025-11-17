@@ -333,21 +333,21 @@ export async function updateAdmin(req, res) {
   const { id } = req.params;
   const { username, email } = req.body;
   try {
-    const matchName = await prisma.$queryRaw`
-      SELECT username FROM admin WHERE LOWER(username) = LOWER(${username})
-    `;
-    const matchEmail = await prisma.$queryRaw`
-      SELECT email FROM admin WHERE LOWER(email) = LOWER(${email})
-    `;
-    if (matchName.length > 0)
-      return response(
-        403,
-        "Username Already Exist",
-        "Sign Up Admin Failed",
-        res
-      );
-    if (matchEmail.length > 0)
-      return response(403, "email Already Exist", "Sign Up Admin Failed", res);
+    // const matchName = await prisma.$queryRaw`
+    //   SELECT * FROM admin WHERE LOWER(username) = LOWER(${username})
+    // `;
+    // const matchEmail = await prisma.$queryRaw`
+    //   SELECT email FROM admin WHERE LOWER(email) = LOWER(${email})
+    // `;
+    // if (matchName.length > 0)
+    //   return response(
+    //     403,
+    //     "Username Already Exist",
+    //     "Sign Up Admin Failed",
+    //     res
+    //   );
+    // if (matchEmail.length > 0)
+    //   return response(403, "email Already Exist", "Sign Up Admin Failed", res);
     let avatarUrl = null;
 
     if (req.file) {
@@ -764,7 +764,7 @@ export async function updateCourse(req, res) {
   const { title, description } = req.body;
   try {
     const matchTitle = await prisma.$queryRaw`
-      SELECT title FROM course WHERE LOWER(title) = LOWER(${title})
+      SELECT title FROM course WHERE LOWER(title) = LOWER(${title}) AND id != ${Number(id)}
     `;
     if (matchTitle.length > 0)
       return response(
@@ -1065,7 +1065,7 @@ export async function updatePath(req, res) {
   const { name, description } = req.body;
   try {
     const matchTitle = await prisma.$queryRaw`
-      SELECT name FROM path WHERE LOWER(name) = LOWER(${name})
+      SELECT name FROM path WHERE LOWER(name) = LOWER(${name}) AND id != ${Number(id)}
     `;
     if (matchTitle.length > 0)
       return response(
@@ -1575,7 +1575,7 @@ export async function updateLesson(req, res) {
   const { title, type, sourceUrl, content } = req.body;
   try {
      const matchTitle = await prisma.$queryRaw`
-      SELECT title FROM lesson WHERE LOWER(title) = LOWER(${title})
+      SELECT title FROM lesson WHERE LOWER(title) = LOWER(${title}) AND id != ${Number(id)}
     `;
     if (matchTitle.length > 0)
       return response(
@@ -1612,6 +1612,7 @@ export async function getLessonById(req, res) {
         LessonSection: {
           select: {
             title: true,
+            id : true
           },
         },
       },
@@ -1794,6 +1795,60 @@ export async function getLessonSection(req, res) {
     return response(200, data, "Get lesson section failed", res);
   } catch (error) {
     return response(500, error.message, "Get Lesson Section Failed", res);
+  }
+}
+
+export async function getLessonSectionById(req, res) {
+  const { id } = req.params
+  try {
+    const data = await prisma.lessonSection.findUnique({
+      where : {
+        id : Number(id)
+      },
+      include : {
+        lesson : true,
+        lessonCourse : {
+          include : {
+            course : true
+          }
+        }
+      }
+    })
+    return response(200, data, 'Get Lesson Section By Id Success', res)
+  } catch (error) {
+    return response(500, error.message, 'Get Lesson Section By Id Failed', res)
+  }
+}
+
+export async function updateLessonSection(req, res) {
+  const { id } = req.params
+  const { title } = req.body
+  try {
+    const data = await prisma.lessonSection.update({
+      where : {
+        id : Number(id),
+      },
+      data : {
+        title
+      }
+    })
+    return response(200, data, 'Update Lesson Section Success', res)
+  } catch (error) {
+    return response(500, error, 'Update Lesson Section Failed', res)
+  }
+}
+
+export async function DeleteLessonSection(req, res) {
+  const { id } = req.params
+  try {
+    const data = await prisma.lessonSection.delete({
+      where : {
+        id : Number(id)
+      }
+    })
+    return response(200, data, 'Delete lesson Section Success', res)
+  } catch (error) {
+    return response(500, error.message, 'Delete Lesson Section Failed', res)
   }
 }
 
