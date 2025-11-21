@@ -54,6 +54,11 @@ const Detaillesson = () => {
             return dispatch(showNotif({ message : 'Fetch Success', type : 'success' }))
         } 
     } catch (error) {
+      if(axios.isAxiosError(error)) {
+        if(error.status === 404) {
+          return dispatch(showNotif({ message : 'File Not Found', type: 'error' }))
+        }
+      }
       console.log(error);
     }
   };

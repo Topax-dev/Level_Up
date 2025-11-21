@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../helpers/auth.js";
 import cloudinary from "../utils/cloudinary.js";
 import streamifier from "streamifier";
-import { resolve } from "path";
 
 const prisma = new PrismaClient();
 

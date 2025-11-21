@@ -40,12 +40,12 @@ export default function LessonPage() {
             process.env.NEXT_PUBLIC_SERVER_URL
           }/api/lesson/title/${formatNormal(hyphenLesson)}/${userId ?? null}`
         );
-        // if (!response.data[0].payload) {
-        //   Router.push("/paths");
-        //   return dispatch(
-        //     showNotif({ message: "Lesson Invalid", type: "error" })
-        //   );
-        // }
+        if (!response.data[0].payload) {
+          Router.push("/paths");
+          return dispatch(
+            showNotif({ message: "Lesson Invalid", type: "error" })
+          );
+        }
         if (response.status == 200) {
           setNotFound(false);
           const test = await axios.get(
@@ -54,7 +54,16 @@ export default function LessonPage() {
             }/api/lesson/by-title/${formatNormal(hyphenLesson)}`
           );
           const course =
-            test.data[0].payload[0].LessonSection.lessonCourse[0].course;
+            test.data[0].payload[0].LessonSection?.lessonCourse?.[0]?.course;
+          if (!course) {
+            Router.push("/paths");
+            return dispatch(
+              showNotif({
+                message: "Lesson Not Yet Listed in Sections",
+                type: "info",
+              })
+            );
+          }
           setCourse(course);
           setPathTitle(
             test.data[0].payload[0].LessonSection.lessonCourse[0].course
@@ -82,7 +91,7 @@ export default function LessonPage() {
             );
           } else {
             return dispatch(
-              showNotif({ message: "Something went wrong", type: "error" })
+              showNotif({ message: "Lesson Invalid", type: "error" })
             );
           }
         } else {
