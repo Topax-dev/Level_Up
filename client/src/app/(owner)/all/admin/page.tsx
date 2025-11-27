@@ -2,6 +2,7 @@
 
 import { IAdminSlice } from "@/interface/iAll";
 import { hideLoading, showLoading } from "@/redux/loadingSlice";
+import { showNotif } from "@/redux/notifSlice";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
 import { Plus, User, Calendar, Trash } from "lucide-react";
@@ -14,8 +15,10 @@ const AllAdmin = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [admin, setAdmin] = useState<IAdminSlice[]>([]);
   const [search, setSearch] = useState("");
+  const [popDelete, setPopDelete] = useState(false)
+  const [idPath, setIdPath] = useState(0)
+  const [load, setLoad] = useState(0)
 
-  // Fetch data sekali saja
   useEffect(() => {
     const getAllAdmin = async () => {
       dispatch(showLoading());
@@ -33,7 +36,7 @@ const AllAdmin = () => {
       }
     };
     getAllAdmin();
-  }, [dispatch]);
+  }, [dispatch, load]);
 
   const filteredAdmin = useMemo(() => {
     if (!search.trim()) return admin;
@@ -41,6 +44,19 @@ const AllAdmin = () => {
       e.username.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, admin]);
+
+  const handleDelete = async (idAdmin : number) => {
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/${idAdmin}`)
+      if(response.status === 200) {
+        setLoad(load + 1)
+        setPopDelete(false)
+        return dispatch(showNotif({ message : 'Delete Admin Successfuly', type : 'success' }))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="py-10 xl:px-55 lg:px-40 md:px-5 px-4">
@@ -120,7 +136,10 @@ const AllAdmin = () => {
                 </div>
               </div>
               <div className="absolute -top-4 right-4">
-                <button className="dark:bg-gray-800 bg-white border-gray-200 dark:border-gray-600 border transition-colors rounded-full p-1.5 cursor-pointer shadow-md">
+                <button className="dark:bg-gray-800 bg-white border-gray-200 dark:border-gray-600 border transition-colors rounded-full p-1.5 cursor-pointer shadow-md" onClick={() => {
+                  setPopDelete(true)
+                  setIdPath(e.id)
+                }}>
                   <Trash
                     size={18}
                     strokeWidth={2}
@@ -146,6 +165,47 @@ const AllAdmin = () => {
           </div>
         )}
       </div>
+       {popDelete && (
+              <div
+                className="fixed inset-0 bg-gray-900/70 backdrop-blur-sm z-50 flex justify-center items-center p-4"
+                onClick={() => setPopDelete(false)}
+              >
+                <div
+                  className="max-w-md w-full dark:bg-gray-800 bg-white border border-gray-200 dark:border-gray-600/50 z-50 px-8 py-7 flex flex-col gap-6 rounded-2xl shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex flex-col gap-3 text-center">
+                    <div className="mx-auto p-4 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 mb-2">
+                      <Trash size={32} strokeWidth={2} />
+                    </div>
+                    <h3 className="text-2xl font-bold dark:text-gray-200 text-gray-800">
+                      Delete Path?
+                    </h3>
+                    <p className="text-sm dark:text-gray-400 text-gray-600">
+                      This action cannot be undone. The Path will be permanently
+                      deleted.
+                    </p>
+                  </div>
+      
+                  <div className="flex gap-3">
+                    <button
+                      className="flex-1 py-3 px-6 cursor-pointer dark:text-gray-100 text-white dark:bg-red-600 bg-red-600 hover:bg-red-700 dark:hover:bg-red-700 transition-all duration-300 rounded-md font-semibold"
+                      onClick={() => {
+                        handleDelete(idPath);
+                      }}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="flex-1 py-3 px-6 cursor-pointer border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 rounded-md font-semibold"
+                      onClick={() => setPopDelete(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
     </div>
   );
 };

@@ -763,7 +763,9 @@ export async function updateCourse(req, res) {
   const { title, description } = req.body;
   try {
     const matchTitle = await prisma.$queryRaw`
-      SELECT title FROM course WHERE LOWER(title) = LOWER(${title}) AND id != ${Number(id)}
+      SELECT title FROM course WHERE LOWER(title) = LOWER(${title}) AND id != ${Number(
+      id
+    )}
     `;
     if (matchTitle.length > 0)
       return response(
@@ -1064,7 +1066,9 @@ export async function updatePath(req, res) {
   const { name, description } = req.body;
   try {
     const matchTitle = await prisma.$queryRaw`
-      SELECT name FROM path WHERE LOWER(name) = LOWER(${name}) AND id != ${Number(id)}
+      SELECT name FROM path WHERE LOWER(name) = LOWER(${name}) AND id != ${Number(
+      id
+    )}
     `;
     if (matchTitle.length > 0)
       return response(
@@ -1573,8 +1577,10 @@ export async function updateLesson(req, res) {
   const { id } = req.params;
   const { title, type, sourceUrl, content } = req.body;
   try {
-     const matchTitle = await prisma.$queryRaw`
-      SELECT title FROM lesson WHERE LOWER(title) = LOWER(${title}) AND id != ${Number(id)}
+    const matchTitle = await prisma.$queryRaw`
+      SELECT title FROM lesson WHERE LOWER(title) = LOWER(${title}) AND id != ${Number(
+      id
+    )}
     `;
     if (matchTitle.length > 0)
       return response(
@@ -1611,7 +1617,7 @@ export async function getLessonById(req, res) {
         LessonSection: {
           select: {
             title: true,
-            id : true
+            id: true,
           },
         },
       },
@@ -1682,6 +1688,11 @@ export async function getLessonByTitle(req, res) {
                   status: true,
                 },
               },
+              LessonSection : {
+                include : {
+                  lessonCourse : true
+                }
+              }
             },
           })
         : await prisma.lesson.findFirst({
@@ -1696,7 +1707,7 @@ export async function getLessonByTitle(req, res) {
 }
 
 export async function getCourseLessonSectionWithTitleLesson(req, res) {
-  const { title } = req.params;
+  const { title, pathId } = req.params;
   try {
     const data = await prisma.lesson.findFirst({
       where: {
@@ -1710,6 +1721,11 @@ export async function getCourseLessonSectionWithTitleLesson(req, res) {
                 course: {
                   include: {
                     pathCourses: {
+                      where : {
+                        pathId: Number(pathId),
+                      },
+                      take : 1,
+                      orderBy : {id : 'asc'},
                       include: {
                         path: {
                           select: {
@@ -1798,56 +1814,56 @@ export async function getLessonSection(req, res) {
 }
 
 export async function getLessonSectionById(req, res) {
-  const { id } = req.params
+  const { id } = req.params;
   try {
     const data = await prisma.lessonSection.findUnique({
-      where : {
-        id : Number(id)
+      where: {
+        id: Number(id),
       },
-      include : {
-        lesson : true,
-        lessonCourse : {
-          include : {
-            course : true
-          }
-        }
-      }
-    })
-    return response(200, data, 'Get Lesson Section By Id Success', res)
+      include: {
+        lesson: true,
+        lessonCourse: {
+          include: {
+            course: true,
+          },
+        },
+      },
+    });
+    return response(200, data, "Get Lesson Section By Id Success", res);
   } catch (error) {
-    return response(500, error.message, 'Get Lesson Section By Id Failed', res)
+    return response(500, error.message, "Get Lesson Section By Id Failed", res);
   }
 }
 
 export async function updateLessonSection(req, res) {
-  const { id } = req.params
-  const { title } = req.body
+  const { id } = req.params;
+  const { title } = req.body;
   try {
     const data = await prisma.lessonSection.update({
-      where : {
-        id : Number(id),
+      where: {
+        id: Number(id),
       },
-      data : {
-        title
-      }
-    })
-    return response(200, data, 'Update Lesson Section Success', res)
+      data: {
+        title,
+      },
+    });
+    return response(200, data, "Update Lesson Section Success", res);
   } catch (error) {
-    return response(500, error, 'Update Lesson Section Failed', res)
+    return response(500, error, "Update Lesson Section Failed", res);
   }
 }
 
 export async function DeleteLessonSection(req, res) {
-  const { id } = req.params
+  const { id } = req.params;
   try {
     const data = await prisma.lessonSection.delete({
-      where : {
-        id : Number(id)
-      }
-    })
-    return response(200, data, 'Delete lesson Section Success', res)
+      where: {
+        id: Number(id),
+      },
+    });
+    return response(200, data, "Delete lesson Section Success", res);
   } catch (error) {
-    return response(500, error.message, 'Delete Lesson Section Failed', res)
+    return response(500, error.message, "Delete Lesson Section Failed", res);
   }
 }
 

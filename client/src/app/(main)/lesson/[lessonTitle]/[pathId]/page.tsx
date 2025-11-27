@@ -19,6 +19,8 @@ export default function LessonPage() {
   const Router = useRouter();
   const params = useParams();
   const hyphenLesson = params?.lessonTitle as string;
+  const pathId = params?.pathId as string
+  console.log(pathId)
   const [isClient, setIsClient] = useState(false);
   const [notFound, setNotFound] = useState(true);
   const [lesson, setLesson] = useState<ILessonProgress>();
@@ -40,6 +42,7 @@ export default function LessonPage() {
             process.env.NEXT_PUBLIC_SERVER_URL
           }/api/lesson/title/${formatNormal(hyphenLesson)}/${userId ?? null}`
         );
+        console.log(response.data[0].payload)
         if (!response.data[0].payload) {
           Router.push("/paths");
           return dispatch(
@@ -51,8 +54,9 @@ export default function LessonPage() {
           const test = await axios.get(
             `${
               process.env.NEXT_PUBLIC_SERVER_URL
-            }/api/lesson/by-title/${formatNormal(hyphenLesson)}`
+            }/api/lesson/by-title/${formatNormal(hyphenLesson)}/${pathId}`
           );
+          console.log(test.data[0].payload)
           const course =
             test.data[0].payload[0].LessonSection?.lessonCourse?.[0]?.course;
           if (!course) {

@@ -11,6 +11,7 @@ import {
   AddProgressCompleted,
   AddUser,
   deleteActionAdmin,
+  deleteAdmin,
   deleteCourse,
   deletelesson,
   deleteLessonCourse,
@@ -104,7 +105,7 @@ routes.post("/api/admin", addAdmin);
 routes.patch("/api/admin/edit/password/:id", updateAdminPassword);
 
 routes.patch("/api/admin/:id", upload.single("avatar"), updateAdmin);
-routes.delete("/api/admin/:id", getAdmin);
+routes.delete("/api/admin/:id", deleteAdmin);
 routes.post("/api/logout/admin", logoutAdmin);
 
 routes.post("/api/admin/login", loginAdmin);
@@ -171,7 +172,7 @@ routes.patch('/api/delete-lesson-section/:id', deleteLessonFromSection)
 routes.get('/api/lesson-section-id/:id', getLessonBySectionId)
 routes.post('/api/lesson', addLesson)
 routes.get('/api/lesson/github/:id', getContentWithGithub)
-routes.get('/api/lesson/by-title/:title', getCourseLessonSectionWithTitleLesson)
+routes.get('/api/lesson/by-title/:title/:pathId', getCourseLessonSectionWithTitleLesson)
 
 
 // LessonSection

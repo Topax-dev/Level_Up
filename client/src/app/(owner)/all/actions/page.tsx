@@ -2,9 +2,10 @@
 
 import { IAllActionAdmin } from "@/interface/iAll";
 import { hideLoading, showLoading } from "@/redux/loadingSlice";
+import { showNotif } from "@/redux/notifSlice";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
-import { ArrowDown, Clock, Edit, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, Clock, Edit, Plus, Trash, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -12,6 +13,9 @@ const AllActions = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [action, setAction] = useState<IAllActionAdmin[]>([]);
   const [category, setCategory] = useState(false);
+  const [popDelete, setPopDelete] = useState(false);
+  const [load, setLoad] = useState(0);
+  const [idPath, setIdPath] = useState(0);
   const [inputCheck, setInputCheck] = useState({
     add: true,
     update: true,
@@ -25,7 +29,7 @@ const AllActions = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/action-admin`
         );
-        setAction(response.data[0].payload)
+        setAction(response.data[0].payload);
       } catch (error) {
         console.log(error);
       } finally {
@@ -33,7 +37,7 @@ const AllActions = () => {
       }
     };
     getAllActionAdmin();
-  }, [dispatch]);
+  }, [dispatch, load]);
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -41,7 +45,7 @@ const AllActions = () => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/action-admin?search=${search}&add=${inputCheck.add}&del=${inputCheck.delete}&update=${inputCheck.update}`
       );
       setAction(response.data[0].payload);
-      console.log(response)
+      console.log(response);
     }, 500);
     return () => clearTimeout(timeout);
   }, [search, inputCheck.add, inputCheck.delete, inputCheck.update]);
@@ -52,6 +56,23 @@ const AllActions = () => {
       ...prev,
       [name]: checked,
     }));
+  };
+
+  const handleDelete = async (idAction: number) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/action-admin/${idAction}`
+      );
+      if (response.status === 200) {
+        setLoad(load + 1);
+        setPopDelete(false);
+        return dispatch(
+          showNotif({ message: "Delete Action Successfuly", type: "success" })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getActionIcon = (actionType: string) => {
@@ -138,48 +159,103 @@ const AllActions = () => {
         {action.length === 0
           ? null
           : action.map((e, index) => (
-              <div
-                key={e.id}
-                className="group relative overflow-hidden border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="absolute right-5 top-5">
-                  <div
-                    className={`
+                <div className="relative group border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1" key={e.id}>
+                  <div className="relative group overflow-hidde shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div className="absolute right-5 top-5">
+                      <div
+                        className={`
                       ${e.action === "Add" ? "bg-blue-500" : ""}
                       ${e.action === "Update" ? "bg-yellow-500" : ""}
                       ${e.action === "Delete" ? "bg-red-500" : ""}
                       flex items-center gap-2 py-2 px-4 rounded-lg shadow-md text-white font-semibold text-sm
                     `}
-                  >
-                    {getActionIcon(e.action)}
-                    <span>{e.action}</span>
+                      >
+                        {getActionIcon(e.action)}
+                        <span>{e.action}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-8 pt-20 flex flex-col h-full gap-3">
+                      <div className="flex items-center gap-3 mb-4 absolute top-5 left-5">
+                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                          <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
+                            #{index + 1}
+                          </span>
+                        </div>
+                        <div className="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent dark:from-gray-700"></div>
+                      </div>
+
+                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-xl">
+                        {e.explanation}
+                      </p>
+
+                      <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <div className="flex items-center text-xs text-gray-400 dark:text-gray-600">
+                          <Clock className="w-3.5 h-3.5 mr-1.5" />
+                          <span>by {e.admin.username}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -top-4 right-4 z-20">
+                    <button
+                      className="dark:bg-gray-800 bg-white border-gray-200 dark:border-gray-600 border transition-colors rounded-full p-1.5 cursor-pointer shadow-md"
+                      onClick={() => {
+                        setPopDelete(true);
+                        setIdPath(e.id);
+                      }}
+                    >
+                      <Trash
+                        size={18}
+                        strokeWidth={2}
+                        className="dark:text-white text-black"
+                      />
+                    </button>
                   </div>
                 </div>
-
-                <div className="p-8 pt-20 flex flex-col h-full gap-3">
-                  <div className="flex items-center gap-3 mb-4 absolute top-5 left-5">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                      <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
-                        #{index + 1}
-                      </span>
-                    </div>
-                    <div className="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent dark:from-gray-700"></div>
-                  </div>
-
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-xl">
-                    {e.explanation}
-                  </p>
-
-                  <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center text-xs text-gray-400 dark:text-gray-600">
-                      <Clock className="w-3.5 h-3.5 mr-1.5" />
-                      <span>by {e.admin.username}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             ))}
       </div>
+      {popDelete && (
+        <div
+          className="fixed inset-0 bg-gray-900/70 backdrop-blur-sm z-50 flex justify-center items-center p-4"
+          onClick={() => setPopDelete(false)}
+        >
+          <div
+            className="max-w-md w-full dark:bg-gray-800 bg-white border border-gray-200 dark:border-gray-600/50 z-50 px-8 py-7 flex flex-col gap-6 rounded-2xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col gap-3 text-center">
+              <div className="mx-auto p-4 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 mb-2">
+                <Trash size={32} strokeWidth={2} />
+              </div>
+              <h3 className="text-2xl font-bold dark:text-gray-200 text-gray-800">
+                Delete Path?
+              </h3>
+              <p className="text-sm dark:text-gray-400 text-gray-600">
+                This action cannot be undone. The Path will be permanently
+                deleted.
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                className="flex-1 py-3 px-6 cursor-pointer dark:text-gray-100 text-white dark:bg-red-600 bg-red-600 hover:bg-red-700 dark:hover:bg-red-700 transition-all duration-300 rounded-md font-semibold"
+                onClick={() => {
+                  handleDelete(idPath);
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className="flex-1 py-3 px-6 cursor-pointer border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 rounded-md font-semibold"
+                onClick={() => setPopDelete(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

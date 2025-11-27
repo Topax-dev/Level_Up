@@ -28,6 +28,7 @@ const LessonSection = () => {
   const admin = useSelector((state: RootState) => state.admin.id);
   const params = useParams();
   const hyphenCourse = params?.course as string;
+  const hyphenPath = params?.title as string;
   const courseTitle = formatNormal(hyphenCourse);
   const dispatch = useDispatch<AppDispatch>();
   const [mounted, setMounted] = useState(true);
@@ -37,7 +38,7 @@ const LessonSection = () => {
   const [currentLessonSectionId, setCurrentLessonSectionId] = useState<
     number | null
   >(null);
-
+  const [pathId, setPathId] = useState('')
   const [SelectsAddLesson, setSelectsAddLesson] = useState<string[]>([""]);
   const [updateSelects, setUpdateSelects] = useState<number[]>([]);
   const [DeleteLesson, setDeleteLesson] = useState(false);
@@ -102,6 +103,12 @@ const LessonSection = () => {
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/id-course/lesson/title/${courseTitle}`
         );
 
+        const pathId = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/path/title/${formatNormal(hyphenPath)}`
+        )
+
+        setPathId(pathId.data[0].payload[0].id)
+
         if (!response.data[0].payload[0]) {
           setMounted(false);
           dispatch(showNotif({ message: "Title Is Not Found", type: "error" }));
@@ -113,7 +120,6 @@ const LessonSection = () => {
           const response2 = await axios.get(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/api/course/all-lesson/progress/${courseId}/${user.id}`
           );
-          console.log(response2);
           setLesson(response2.data[0].payload[0].LessonCourse);
           setCourse(response2.data[0].payload[0]);
           return;
@@ -131,7 +137,7 @@ const LessonSection = () => {
       }
     };
     getLessonCourse();
-  }, [dispatch, courseTitle, router, user.id, load]);
+  }, [dispatch, courseTitle, router, user.id, load, hyphenPath]);
 
   useEffect(() => {
     const getLessonSection = async () => {
@@ -468,7 +474,7 @@ const LessonSection = () => {
                   ) : (
                     e.LessonSection?.lesson?.map((e, i) => (
                       <Link
-                        href={`/lesson/${formatHyphen(e.title)}`}
+                        href={`/lesson/${formatHyphen(e.title)}/${pathId}`}
                         aria-disabled={false}
                         onClick={(e) => {
                           if (DeleteLesson) e.preventDefault();

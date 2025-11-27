@@ -49,7 +49,6 @@ const Detaillesson = () => {
     try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/lesson/github/${id}`)
         if(response.status === 200) {
-            console.log(response)
             setLoad(load + 1)
             return dispatch(showNotif({ message : 'Fetch Success', type : 'success' }))
         } 
