@@ -477,7 +477,7 @@ const PathCourse = () => {
               </h1>
 
               <form className="space-y-4" onSubmit={handleUpdateCourse}>
-                {course.map((value, index) => (
+                {course.map((_, index) => (
                   <div key={index} className="flex flex-col gap-1">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Course {index + 1}

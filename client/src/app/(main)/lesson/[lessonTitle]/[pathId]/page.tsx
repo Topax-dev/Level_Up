@@ -106,7 +106,7 @@ export default function LessonPage() {
       }
     };
     getLesson();
-  }, [dispatch, hyphenLesson, Router, userId]);
+  }, [dispatch, hyphenLesson, Router, userId, pathId]);
 
   const handleCompleted = async () => {
     dispatch(showLoading());
@@ -154,7 +154,7 @@ export default function LessonPage() {
                     </div>
                     <div className="min-w-full text-lg text-gray-500 dark:text-gray-400">
                       {course.title}
-                    </div>
+                    </div> 
                   </div>
                 </div>
               ) : null}
@@ -206,7 +206,7 @@ export default function LessonPage() {
                 )}
                 {nextLesson ? (
                   <Link
-                    href={`/lesson/${formatHyphen(nextLesson)}`}
+                    href={`/lesson/${formatHyphen(nextLesson)}/${pathId}`}
                     className="button border border-gray-400 dark:border-gray-600 px-5 py-3 font-medium rounded-md"
                   >
                     <button className="flex gap-3 justify-center items-center cursor-pointer mx-auto md:mx-0">

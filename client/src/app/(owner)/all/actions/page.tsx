@@ -197,7 +197,7 @@ const AllActions = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="absolute -top-4 right-4 z-20">
+                  <div className="absolute -top-4 right-4">
                     <button
                       className="dark:bg-gray-800 bg-white border-gray-200 dark:border-gray-600 border transition-colors rounded-full p-1.5 cursor-pointer shadow-md"
                       onClick={() => {
@@ -221,7 +221,7 @@ const AllActions = () => {
           onClick={() => setPopDelete(false)}
         >
           <div
-            className="max-w-md w-full dark:bg-gray-800 bg-white border border-gray-200 dark:border-gray-600/50 z-50 px-8 py-7 flex flex-col gap-6 rounded-2xl shadow-2xl"
+            className="max-w-md w-full dark:bg-gray-800 bg-white border border-gray-200 dark:border-gray-600/50 z-10 px-8 py-7 flex flex-col gap-6 rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col gap-3 text-center">
